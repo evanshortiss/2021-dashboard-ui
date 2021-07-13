@@ -2,7 +2,7 @@ import { Drash } from "https://deno.land/x/drash@v1.4.4/mod.ts";
 import { Tengine } from "https://deno.land/x/drash_middleware@v0.7.6/tengine/mod.ts";
 import { DashboardResource } from "./src/dashboard.ts";
 import { ScriptsResource } from "./src/scripts.ts";
-import { ReplayResource } from "./src/replay.ts";
+import { ReplayResource, ReplayVisuals } from "./src/replay.ts";
 
 const tengine = Tengine({
     render: (...args: unknown[]): boolean => {
@@ -15,15 +15,16 @@ const server = new Drash.Http.Server({
     directory: ".",
     response_output: "text/html",
     static_paths: {
-        "/css":"./assets/css", 
-        "/fonts": "./assets/fonts", 
-        "/img": "./assets/img", 
+        "/css":"./assets/css",
+        "/fonts": "./assets/fonts",
+        "/img": "./assets/img",
         "/data": "./assets/data"
     },
     resources: [
         DashboardResource,
         ReplayResource,
-        ScriptsResource
+        ScriptsResource,
+        ReplayVisuals
     ],
     middleware: {
         after_resource: [

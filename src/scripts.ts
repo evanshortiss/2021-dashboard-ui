@@ -13,7 +13,7 @@ export class ScriptsResource extends Drash.Http.Resource {
         } else if (await exists(fileName.replace('.js','.ts'))) {
             const { files, diagnostics } = await Deno.emit(fileName.replace('.js','.ts'), {
                 check: false,
-                bundle: 'esm',
+                bundle: 'module',
                 compilerOptions: {
                 lib: ['esnext','dom'],
                 module: 'es6',
@@ -28,7 +28,7 @@ export class ScriptsResource extends Drash.Http.Resource {
         } else {
             this.response.body = '';
         }
-        
+
         return this.response;
     }
 }

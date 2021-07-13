@@ -15,8 +15,8 @@ console.log(config);
 function replaceValues(str:string, vals:Map<string,string>) {
   vals.forEach((v,k) => {
       str = str.replaceAll('${'+k+'}',v)
-  }); 
-  return str; 
+  });
+  return str;
 }
 
 const dashboardFile = replaceValues(await Deno.readTextFile(`${Deno.cwd()}/assets/html/dashboard.html`), config);
@@ -73,7 +73,7 @@ router
     } else if (await exists(fileName.replace('.js','.ts'))) {
       const { files, diagnostics } = await Deno.emit(fileName.replace('.js','.ts'), {
         check: false,
-        bundle: 'esm',
+        bundle: 'module',
         compilerOptions: {
           lib: ['esnext','dom'],
           module: 'es6',
