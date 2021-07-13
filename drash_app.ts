@@ -40,3 +40,7 @@ server.run({
 
 console.log(`Server running at ${server.hostname}:${server.port}`);
 
+for await (const _ of Deno.signal(Deno.Signal.SIGINT)) {
+  console.log("Detected kill signal. Exiting");
+  Deno.exit();
+}
