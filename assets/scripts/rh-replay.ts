@@ -1,11 +1,16 @@
 const template = `
 <style>
 	:host { display:block; width: 100%; animation: .5s ease-in blipIn; }
-	@keyframes blipIn { 
+	@keyframes blipIn {
 		from { transform: scaleY(0); }
 		to { transform: scaleY(1); }
 	}
+  p {
+    font-size: 7pt;
+    text-align: center;
+  }
 </style>
+<p id="human_name">Human</p>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 410">
 	<defs>
 		<style>
@@ -24,7 +29,8 @@ const template = `
 	<rect class="boardcont" x="0" y="202" width="200" height="200" fill="url(#p2board)"></rect>
 	<g id="turns">
 	</g>
-</svg>`;
+</svg>
+<p id="ai_name">AI</p>`;
 
 export class RHReplay extends HTMLElement {
 	turn = 0;
@@ -35,7 +41,7 @@ export class RHReplay extends HTMLElement {
 
 	_loop = true;
 	get loop() { return this._loop; }
-	set loop(val) { 
+	set loop(val) {
 		if (typeof val === 'string') val = true;
 		if (this._loop === val) return;
 		this._loop = val;
@@ -71,6 +77,13 @@ export class RHReplay extends HTMLElement {
 			img.setAttributeNS('http://www.w3.org/1999/xlink','href', v.hit ? '/img/hit-peg.png':'/img/miss-peg.png');
 			return img;
 		});
+    this.players.forEach((p) => {
+      if (p.toLowerCase().includes('ai')) {
+        this.shadowRoot.querySelector('#ai_name').innerHTML = p
+      } else {
+        this.shadowRoot.querySelector('#human_name').innerHTML = p
+      }
+    })
 	}
 
 	[Symbol.iterator]() {
@@ -95,8 +108,8 @@ export class RHReplay extends HTMLElement {
 
 	start() { this.timer = setInterval(e => this.next(), this.interval*1000); }
 	stop() { clearInterval(this.timer); this.timer = undefined; }
-	reset() { 
-		this.stop(); 
+	reset() {
+		this.stop();
 		let turnsCont = this.shadowRoot.querySelector('#turns');
 		if (this.turn >= this.turns.length && this.loop) {
 			while (turnsCont.firstChild) { turnsCont.removeChild(turnsCont.firstChild); }

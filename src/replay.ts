@@ -6,13 +6,19 @@ type Turn = {
     origin: number[];
 }
 
+type Match = {
+  shots: {
+    hit: boolean
+    ai: boolean
+    x: number
+    y: number
+  }[],
+  ai_name?: string,
+  human_name?: string
+}
+
 type Matches = {
-  [key: string]: {
-      hit: boolean
-      ai: boolean
-      x: number
-      y: number
-  }[]
+  [key: string]: Match
 }
 
 const REPLAY_SERVER = Deno.env.get("REPLAY_SERVER");
@@ -23,10 +29,10 @@ export class ReplayResource extends Drash.Http.Resource {
         const url = new URL('/replays?count=12', REPLAY_SERVER)
         const data = await (await fetch(url)).json() as Matches
         const replays: Turn[][] = Object.keys(data).map((key) => {
-          const matchTurns = data[key]
-          return matchTurns.map(t => {
+          const { shots, ai_name = 'Unknown', human_name = 'Unknown' } = data[key]
+          return shots.map(t => {
             return {
-              attacker: t.ai ? 'AI' : 'Human',
+              attacker: t.ai ? `${ai_name} (AI)` : `${human_name} (Human)`,
               hit: t.hit,
               origin: [t.x, t.y]
             } as Turn
